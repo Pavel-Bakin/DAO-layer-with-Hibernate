@@ -1,30 +1,24 @@
 package ru.netology.daolayerwithhibernate.repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-
-import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import ru.netology.daolayerwithhibernate.model.Person;
+
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-@Transactional
-public class PersonRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+public interface PersonRepository extends JpaRepository<Person, Long> {
 
-    public List<Person> findByCityOfLiving(String cityOfLiving) {
-        try {
-            return entityManager.createQuery("SELECT p FROM Person p WHERE p.cityOfLiving = :city", Person.class)
-                    .setParameter("city", cityOfLiving)
-                    .getResultList();
-        } catch (NoResultException | NonUniqueResultException e) {
-            return null;
-        }
-    }
+    List<Person> findByCityOfLiving(String city);
+
+    List<Person> findByAgeLessThanOrderByAgeAsc(int age);
+
+    Optional<Person> findByNameAndSurname(String name, String surname);
+
+    List<Person> findAll();
+
+    List<Person> findByAgeLessThan(int age);
+
+    Optional<Person> findFirstByNameAndSurname(String name, String surname);
 }
